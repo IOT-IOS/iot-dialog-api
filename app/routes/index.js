@@ -1,5 +1,3 @@
-module.exports = server => {
-    server.use(server.middlewares.bodyParser);
-
-    require('./dialog')(server);
+module.exports = {
+    dialogRoute: require('./dialog.route')
 }
