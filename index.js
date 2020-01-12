@@ -1,18 +1,24 @@
 const express = require('express');
-const server = express();
+const bodyParser = require('body-parser');
+const app = express().use(bodyParser.json());
 const cors = require('cors');
+//global variable
+const dotenv = require('dotenv');
+dotenv.config();
+//routing
+const { dialogRoute } = require('./app/routes')
+//mqttService
+const mqttService = require('./app/services/mqtt.service')
+//port
+const ports = process.env.PORT || 3000;
 
-const ports = process.env.PORT || 3003;
-global.__basedir = __dirname;
 
 async function startServer() {
-    server.use(cors());
+    app.use(cors());
+    dialogRoute.configure(app);
+    mqttService.init();
 
-    require('./app/controllers')(server);
-    require('./app/middlewares')(server);
-    require('./app/routes')(server);
-
-    server.use((req, res) => {
+    app.use((req, res) => {
         res.status(404);
         if (req.accepts('json')) {
             res.send({ error: `Route ${req.url} doesn't exist` });
@@ -20,7 +26,7 @@ async function startServer() {
         }
     });
 
-    server.listen(ports);
+    app.listen(ports);
     console.log(`Server is running on port ${ports}`);
 }
 startServer();
