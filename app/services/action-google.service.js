@@ -1,4 +1,4 @@
-class DialogService {
+class ActionGoogleService {
 
     static processMusicChoice(conv) {
         let queryResult = conv.body.queryResult
@@ -10,5 +10,5 @@ class DialogService {
 }
 
 module.exports = {
-    dialogService: DialogService
+    actionGoogleService: ActionGoogleService
 }

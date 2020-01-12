@@ -11,10 +11,10 @@ class MQTTService {
             console.error(`error connection : ${err}`);
         }
     }
-    static publish(topic, data) {
+    static publishData(topic, data) {
         this.client.subscribe(topic, (err) => {
             if(!err) {
-                this.client.publish(topic, data);
+                this.client.publish(topic, JSON.stringify(data));
             } else {
                 console.error(err);
             }

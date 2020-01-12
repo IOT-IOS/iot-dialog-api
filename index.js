@@ -16,7 +16,6 @@ const ports = process.env.PORT || 3000;
 async function startServer() {
     app.use(cors());
     dialogRoute.configure(app);
-    //Titi78/feeds/dialog-feeds.interact/json
     mqttService.init();
 
     app.use((req, res) => {

@@ -1,35 +1,43 @@
 const { Router } = require('express');
 const { dialogflow, SimpleResponse } = require('actions-on-google');
-const { dialogService } = require('../services/dialog.service')
+const { actionGoogleService } = require('../services/action-google.service')
 const { DialogFlowService } = require('../services/dialogflow.service')
+const mqttService = require('../services/mqtt.service')
 const dialogflowConfig = require('../utils/dialogflow.config');
 
 const router = Router();
+const app = dialogflow({debug: false});
+
 let dialogFlowService = new DialogFlowService(dialogflowConfig.project_id);
 
-const appDialogFlow = dialogflow({debug: false});
-
-appDialogFlow.fallback((conv) => {
-    console.log(conv)
-    let talk = dialogService.processMusicChoice(conv)
+router.post('/talk-action', app);
+app.fallback((conv) => {
+    let talk = actionGoogleService.processMusicChoice(conv)
+    console.log(talk)
     switch(conv.intent) {
         case 'choix-musique':
-            conv.json()
-            console.log('action')
-            console.log(talk)
-            conv.close(talk.response)
+            if(Object.keys(conv.request).length > 0) {
+                mqttService.publishData('Titi78/feeds/dialog-feeds.interact/json', talk);
+            } else {
+                console.log('sdk');
+            }
             break;
     }
     conv.ask(new SimpleResponse({
-        speech: 'Attente dela réponse'
-    }))
+        speech: talk.response
+    }));
 })
 
-router.post('/talk', appDialogFlow);
-router.get('/test', async (req, res) => {
-    let send = await dialogFlowService.sendTextMessageToDialogFlow('joue', dialogflowConfig.session_id)
-    console.log(send[0].queryResult.outputContexts)
-    return res.send('ss')
+router.get('/talk', async (req, res) => {
+    if(!req.query.action) return res.status(404).send('action missing');
+
+    let send = await dialogFlowService.sendTextMessageToDialogFlow(req.query.action, dialogflowConfig.session_id)
+    if(send[0].queryResult) {
+        return res.status(200).json(
+            {action: send[0].queryResult.queryText, response: send[0].queryResult.fulfillmentText}
+        )
+    }
+    return res.status(404).json({});
 })
 
 module.exports = {
