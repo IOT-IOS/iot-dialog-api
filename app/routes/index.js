@@ -1,3 +1,4 @@
 module.exports = {
-    dialogRoute: require('./dialog.route')
+    dialogRoute: require('./dialog.route'),
+    historyRoute: require('./history.route')
 }

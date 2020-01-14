@@ -10,7 +10,7 @@ const app = dialogflow({debug: false});
 
 let dialogFlowService = new DialogFlowService(dialogflowConfig.project_id);
 
-router.post('/talk-action', app);
+router.post('/dialog', app);
 app.fallback((conv) => {
     let talk = actionGoogleService.processMusicChoice(conv)
     console.log(talk)
@@ -28,7 +28,7 @@ app.fallback((conv) => {
     }));
 })
 
-router.get('/talk', async (req, res) => {
+router.get('/dialog', async (req, res) => {
     if(!req.query.action) return res.status(404).send('action missing');
 
     let send = await dialogFlowService.sendTextMessageToDialogFlow(req.query.action, dialogflowConfig.session_id)

@@ -1,7 +1,7 @@
 const { DialogController } = require('../controllers/dialog.controller')
 class DialogRoute {
     static configure(app) {
-        app.use('/dialog', DialogController)
+        app.use('/action', DialogController)
     }
 }
 
