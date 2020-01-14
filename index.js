@@ -6,9 +6,11 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 //routing
-const { dialogRoute } = require('./app/routes')
+const { dialogRoute, historyRoute } = require('./app/routes');
 //mqttService
-const mqttService = require('./app/services/mqtt.service')
+const mqttService = require('./app/services/mqtt.service');
+//firebase
+const firebase = require('./app/services/firebase.service');
 //port
 const ports = process.env.PORT || 3000;
 
@@ -16,7 +18,9 @@ const ports = process.env.PORT || 3000;
 async function startServer() {
     app.use(cors());
     dialogRoute.configure(app);
+    historyRoute.configure(app);
     mqttService.init();
+    firebase.init();
 
     app.use((req, res) => {
         res.status(404);
