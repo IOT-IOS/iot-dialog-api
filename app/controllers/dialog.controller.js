@@ -17,7 +17,10 @@ app.fallback((conv) => {
     switch(conv.intent) {
         case 'choix-musique':
             if(Object.keys(conv.request).length > 0) {
-                mqttService.publishData('Titi78/feeds/dialog-feeds.interact/json', talk);
+                mqttService.publishData('Titi78/feeds/dialog-feeds.interact', talk.action);
+                setTimeout(() => {
+                    mqttService.publishData('Titi78/feeds/dialog-feeds.interact', talk.response);
+                }, 3000);
             } else {
                 console.log('sdk');
             }
