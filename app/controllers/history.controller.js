@@ -5,7 +5,15 @@ const router = Router();
 
 router.get('/talks', async (req, res) => {
     let talks = await firebaseService.getTalks();
-    if(talks) return res.status(200).json(talks)
+    if(talks) {
+        let talksFilter = talks.filter(data => {
+            if(!req.query.device) {
+                return data;
+            }
+            return data.device.toLowerCase() === req.query.device.toLowerCase();
+        })
+        return res.status(200).json(talksFilter);
+    }
     return res.status(200).json([]);
 });
 
@@ -18,7 +26,8 @@ router.post('/talk', async (req, res) => {
         await firebaseService.postTalk({
             id: idTalk + 1,
             name: req.body.name || '',
-            cration_date: req.body.creation_date || ''
+            creation_date: req.body.creation_date || '',
+            device: req.body.device || ''
         }).then(_ => {
             res.status(200).json({message: "new Talk insert", inserted: true});
         }).catch(err => {
