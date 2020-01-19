@@ -7,12 +7,12 @@ router.get('/talks', async (req, res) => {
     let talks = await firebaseService.getTalks();
     if(talks) {
         let talksFilter = talks.filter(data => {
-            if(!req.query.device) {
-                return data;
-            }
+            if(!req.query.device || req.query.device === "All") return data;
             return data.device.toLowerCase() === req.query.device.toLowerCase();
-        })
-        return res.status(200).json(talksFilter);
+        });
+        return res.status(200).json(talksFilter.sort((a, b) => {
+            return b.creation_date.localeCompare(a.creation_date);
+        }));
     }
     return res.status(200).json([]);
 });
