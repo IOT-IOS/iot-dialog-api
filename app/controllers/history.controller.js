@@ -11,7 +11,6 @@ router.get('/talks', async (req, res) => {
             return data.device.toLowerCase() === req.query.device.toLowerCase() && data.hide !== true;
         });
         return res.status(200).json(talksFilter.sort((a, b) =>  b.id - a.id));
-        //return res.status(200).json(sortData.filter(data => data.hide !== true));
     }
     return res.status(200).json([]);
 });
