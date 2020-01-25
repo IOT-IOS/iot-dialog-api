@@ -39,7 +39,8 @@ router.post('/talk', async (req, res) => {
             id: idTalk + 1,
             name: req.body.name || '',
             creation_date: req.body.creation_date || '',
-            device: req.body.device || ''
+            device: req.body.device || '',
+            hide: false
         }).then(_ => {
             res.status(200).json({message: "new Talk insert", inserted: true});
         }).catch(err => {
