@@ -10,7 +10,7 @@ router.get('/talks', async (req, res) => {
             if(!req.query.device || req.query.device === "All") return data;
             return data.device.toLowerCase() === req.query.device.toLowerCase();
         });
-        let sortData = talksFilter.sort((a, b) =>  b.creation_date.localeCompare(a.creation_date));
+        let sortData = talksFilter.sort((a, b) =>  b.id - a.id);
         return res.status(200).json(sortData.filter(data => data.hide !== true));
     }
     return res.status(200).json([]);
