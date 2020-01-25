@@ -10,12 +10,25 @@ router.get('/talks', async (req, res) => {
             if(!req.query.device || req.query.device === "All") return data;
             return data.device.toLowerCase() === req.query.device.toLowerCase();
         });
-        return res.status(200).json(talksFilter.sort((a, b) => {
-            return b.creation_date.localeCompare(a.creation_date);
-        }));
+        let sortData = talksFilter.sort((a, b) =>  b.creation_date.localeCompare(a.creation_date));
+        return res.status(200).json(sortData.filter(data => data.hide !== true));
     }
     return res.status(200).json([]);
 });
+
+router.patch('/talk', async(req, res) => {
+    if(req.body.id) {
+        await firebaseService.hideTalk(req.body.id)
+        .then(_ => {
+            res.status(200).json({message: `talk ${req.body.id} updated`, updated: true});
+        })
+        .catch(err => {
+            res.status(500).json({message: err, updated: false});
+        });
+    } else {
+        res.status(404).json('Id is missing');
+    }
+})
 
 router.post('/talk', async (req, res) => {
         let talks = await firebaseService.getTalks();

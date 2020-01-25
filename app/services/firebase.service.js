@@ -28,6 +28,13 @@ class FirebaseService {
         })
     }
 
+    static async hideTalk(id) {
+        return new Promise(async (resolve, reject) => {
+            let rootRef = this.firebase.ref(`talk/${id - 1}`);
+            rootRef.update({hide: true}).then(resolve, reject);
+        })
+    }
+
     static async getKeySnapTalk() {
         return new Promise((resolve, reject) => {
             let rootRef = this.firebase.ref('talk');
